@@ -2,12 +2,19 @@
 
 require_relative "fb/version"
 
+require 'net/http'
+require 'json'
+
 module Fb
   class Error < StandardError; end
 
   class User
     def initialize(options = {})
       @access_token = options[:access_token]
+    end
+
+    def access_token=(token)
+      @access_token = token
     end
 
     def email
@@ -86,7 +93,7 @@ module Fb
           parse_response!
         end
       else
-        raise HTTPError.new(error_message, response: response)
+        raise HTTPError.new(error_message)
       end
     end
 
@@ -119,11 +126,11 @@ module Fb
     end
 
     def as_curl
-      'curl'.tap do |curl|
-        curl <<  " -X #{http_request.method}"
-        http_request.each_header{|k, v| curl << %Q{ -H "#{k}: #{v}"}}
-        curl << %Q{ "#{url}"}
+      curl = "curl -X #{http_request.method} \"#{url}\""
+      http_request.each_header do |k, v|
+        curl += %Q{ -H "#{k}: #{v}"}
       end
+      curl
     end
 
     # Run the request and memoize the response or the server error received.
