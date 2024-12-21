@@ -36,7 +36,7 @@ module Fb
       end
     end
 
-    def revoke
+    def revoke_permissions
       params = { access_token: @access_token }
       request = HTTPRequest.new path: '/me/permissions', params: params, method: :delete
       request.run.body['success']
