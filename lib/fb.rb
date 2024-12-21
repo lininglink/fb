@@ -26,6 +26,24 @@ module Fb
         request.run.body['email']
       end
     end
+
+    def pages
+      @pages ||= begin
+        params = { access_token: @access_token }
+        request = HTTPRequest.new path: '/me/accounts', params: params
+        request.run.body['data'].map do |page_data|
+          Page.new symbolize_keys(page_data.merge access_token: @access_token)
+        end
+      end
+    end
+
+    private
+
+    def symbolize_keys(hash)
+      {}.tap do |new_hash|
+        hash.each_key{|key| new_hash[key.to_sym] = hash[key]}
+      end
+    end
   end
 
   module Config
@@ -152,6 +170,17 @@ module Fb
 
     def error_message
       JSON(response.body)['error']['message']
+    end
+  end
+
+  class Page
+    attr_reader :id, :name, :category
+
+    def initialize(options = {})
+      @id = options[:id]
+      @name = options[:name]
+      @category = options[:category]
+      @access_token = options[:access_token]
     end
   end
 end
