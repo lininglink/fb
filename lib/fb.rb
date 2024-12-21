@@ -60,5 +60,9 @@ module Fb
       @category = options[:category]
       @access_token = options[:access_token]
     end
+
+    def thumbnail_url
+      "https://graph.facebook.com/#{@id}/picture?width=240&height=240"
+    end
   end
 end
