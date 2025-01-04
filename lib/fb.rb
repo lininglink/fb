@@ -31,7 +31,10 @@ module Fb
         params = { access_token: @access_token }
         request = HTTPRequest.new path: '/me/accounts', params: params
         request.run.body['data'].map do |page_data|
-          Page.new symbolize_keys(page_data.merge access_token: @access_token)
+          # unless page_data.key?("access_token")
+          #   page_data.merge access_token: @access_token
+          # end
+          Page.new symbolize_keys(page_data)
         end
       end
     end
@@ -63,6 +66,16 @@ module Fb
 
     def thumbnail_url
       "https://graph.facebook.com/#{@id}/picture?width=240&height=240"
+    end
+
+    # Either link or message must be supplied.
+    # https://developers.facebook.com/docs/graph-api/reference/v21.0/page/feed#publish
+    def publish(options = {})
+      params = { access_token: @access_token }
+      params[:link] = options[:link] if options[:link]
+      params[:message] = options[:message] if options[:message]
+      request = HTTPRequest.new(path: "/#{@id}/feed", method: :post, params: params)
+      request.run.body['id']
     end
   end
 end
