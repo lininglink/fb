@@ -31,13 +31,9 @@ module Fb
         params = { access_token: @access_token }
         request = HTTPRequest.new path: '/me/accounts', params: params
         request.run.body['data'].map do |page_data|
-          puts page_data
-          puts
-          unless page_data.key?("access_token")
-            page_data.merge access_token: @access_token
-          end
-          puts page_data
-          puts
+          # unless page_data.key?("access_token")
+          #   page_data.merge access_token: @access_token
+          # end
           Page.new symbolize_keys(page_data)
         end
       end
@@ -66,7 +62,6 @@ module Fb
       @name = options[:name]
       @category = options[:category]
       @access_token = options[:access_token]
-      #
     end
 
     def thumbnail_url
