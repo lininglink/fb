@@ -64,5 +64,15 @@ module Fb
     def thumbnail_url
       "https://graph.facebook.com/#{@id}/picture?width=240&height=240"
     end
+
+    # Either link or message must be supplied.
+    # https://developers.facebook.com/docs/graph-api/reference/v21.0/page/feed#publish
+    def publish(options = {})
+      params = { access_token: @access_token }
+      params[:link] = options[:link] if options[:link]
+      params[:message] = options[:message] if options[:message]
+      request = HTTPRequest.new(path: "/#{@id}/feed", method: :post, params: params)
+      request.run.body['id']
+    end
   end
 end
