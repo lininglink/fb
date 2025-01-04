@@ -31,6 +31,8 @@ module Fb
         params = { access_token: @access_token }
         request = HTTPRequest.new path: '/me/accounts', params: params
         request.run.body['data'].map do |page_data|
+          puts page_data
+          puts
           Page.new symbolize_keys(page_data.merge access_token: @access_token)
         end
       end
