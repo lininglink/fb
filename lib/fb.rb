@@ -11,6 +11,50 @@ require_relative "fb/http_request"
 module Fb
   class Error < StandardError; end
 
+  class Business
+    attr_reader :id, :name
+
+    def initialize(options = {})
+      @access_token = options[:access_token]
+      @id = options[:id]
+      @name = options[:name]
+    end
+
+    def owned_pages
+      @pages ||= begin
+        params = { access_token: @access_token, fields: "category,name" }
+        request = HTTPRequest.new path: "/#{@id}/owned_pages", params: params
+        request.run.body['data'].map do |page_data|
+          unless page_data.key?("access_token")
+            page_data.merge! access_token: @access_token
+          end
+          Page.new symbolize_keys(page_data)
+        end
+      end
+    end
+
+    def client_pages
+      @client_pages ||= begin
+        params = { access_token: @access_token, fields: "category,name" }
+        request = HTTPRequest.new path: "/#{@id}/client_pages", params: params
+        request.run.body['data'].map do |page_data|
+          unless page_data.key?("access_token")
+            page_data.merge! access_token: @access_token
+          end
+          Page.new symbolize_keys(page_data)
+        end
+      end
+    end
+
+    private
+
+    def symbolize_keys(hash)
+      {}.tap do |new_hash|
+        hash.each_key{|key| new_hash[key.to_sym] = hash[key]}
+      end
+    end
+  end
+
   class User
     def initialize(options = {})
       @access_token = options[:access_token]
@@ -26,23 +70,38 @@ module Fb
       end
     end
 
+    def revoke_permissions
+      params = { access_token: @access_token }
+      request = HTTPRequest.new path: '/me/permissions', params: params, method: :delete
+      request.run.body['success']
+    end
+
     def pages
       @pages ||= begin
         params = { access_token: @access_token }
         request = HTTPRequest.new path: '/me/accounts', params: params
         request.run.body['data'].map do |page_data|
           # unless page_data.key?("access_token")
-          #   page_data.merge access_token: @access_token
+          #   page_data.merge! access_token: @access_token
           # end
+          puts page_data
           Page.new symbolize_keys(page_data)
         end
       end
     end
 
-    def revoke_permissions
-      params = { access_token: @access_token }
-      request = HTTPRequest.new path: '/me/permissions', params: params, method: :delete
-      request.run.body['success']
+    def businesses
+      @pages ||= begin
+        params = { access_token: @access_token }
+        request = HTTPRequest.new path: '/me/businesses', params: params
+        request.run.body['data'].map do |business_data|
+          unless business_data.key?("access_token")
+            business_data.merge! access_token: @access_token
+          end
+          puts business_data
+          Business.new symbolize_keys(business_data)
+        end
+      end
     end
 
     private
