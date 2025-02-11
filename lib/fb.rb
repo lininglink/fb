@@ -84,7 +84,6 @@ module Fb
           # unless page_data.key?("access_token")
           #   page_data.merge! access_token: @access_token
           # end
-          puts page_data
           Page.new symbolize_keys(page_data)
         end
       end
@@ -98,7 +97,6 @@ module Fb
           unless business_data.key?("access_token")
             business_data.merge! access_token: @access_token
           end
-          puts business_data
           Business.new symbolize_keys(business_data)
         end
       end
