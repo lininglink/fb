@@ -21,7 +21,7 @@ module Fb
     end
 
     def owned_pages
-      @pages ||= begin
+      @owned_pages ||= begin
         params = { access_token: @access_token, fields: "category,name" }
         request = HTTPRequest.new path: "/#{@id}/owned_pages", params: params
         request.run.body['data'].map do |page_data|
@@ -90,7 +90,7 @@ module Fb
     end
 
     def businesses
-      @pages ||= begin
+      @businesses ||= begin
         params = { access_token: @access_token }
         request = HTTPRequest.new path: '/me/businesses', params: params
         request.run.body['data'].map do |business_data|
