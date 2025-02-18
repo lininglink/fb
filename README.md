@@ -10,13 +10,7 @@ Install the gem and add to the application's Gemfile by executing:
 bundle add fb --github=kangkyu/fb
 ```
 
-This gem is not on [rubygems.org](https://rubygems.org). Do not run following (there is a name of this gem for a different gem):
-
-```bash
-gem install fb
-# or
-bundle add fb
-```
+This gem is not on [rubygems.org](https://rubygems.org). Do not run `gem install fb` or `bundle add fb` (there is a name of this gem for a different gem)
 
 ## Usage
 
