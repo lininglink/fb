@@ -22,12 +22,12 @@ module Fb
 
     def owned_pages
       @owned_pages ||= begin
-        params = { access_token: @access_token, fields: "category,name" }
+        params = { access_token: @access_token, fields: "category,name,access_token" }
         request = HTTPRequest.new path: "/#{@id}/owned_pages", params: params
         request.run.body['data'].map do |page_data|
-          unless page_data.key?("access_token")
-            page_data.merge! access_token: @access_token
-          end
+          # unless page_data.key?("access_token")
+          #   page_data.merge! access_token: @access_token
+          # end
           Page.new symbolize_keys(page_data)
         end
       end
@@ -35,12 +35,12 @@ module Fb
 
     def client_pages
       @client_pages ||= begin
-        params = { access_token: @access_token, fields: "category,name" }
+        params = { access_token: @access_token, fields: "category,name,access_token" }
         request = HTTPRequest.new path: "/#{@id}/client_pages", params: params
         request.run.body['data'].map do |page_data|
-          unless page_data.key?("access_token")
-            page_data.merge! access_token: @access_token
-          end
+          # unless page_data.key?("access_token")
+          #   page_data.merge! access_token: @access_token
+          # end
           Page.new symbolize_keys(page_data)
         end
       end
@@ -50,7 +50,7 @@ module Fb
 
     def symbolize_keys(hash)
       {}.tap do |new_hash|
-        hash.each_key{|key| new_hash[key.to_sym] = hash[key]}
+        hash.each_key {|key| new_hash[key.to_sym] = hash[key] }
       end
     end
   end
@@ -78,7 +78,7 @@ module Fb
 
     def pages
       @pages ||= begin
-        params = { access_token: @access_token }
+        params = { access_token: @access_token, fields: "category,name,access_token" }
         request = HTTPRequest.new path: '/me/accounts', params: params
         request.run.body['data'].map do |page_data|
           # unless page_data.key?("access_token")
@@ -91,7 +91,7 @@ module Fb
 
     def businesses
       @businesses ||= begin
-        params = { access_token: @access_token }
+        params = { access_token: @access_token, fields: "name,access_token" }
         request = HTTPRequest.new path: '/me/businesses', params: params
         request.run.body['data'].map do |business_data|
           unless business_data.key?("access_token")
@@ -106,7 +106,7 @@ module Fb
 
     def symbolize_keys(hash)
       {}.tap do |new_hash|
-        hash.each_key{|key| new_hash[key.to_sym] = hash[key]}
+        hash.each_key {|key| new_hash[key.to_sym] = hash[key] }
       end
     end
   end
@@ -124,6 +124,13 @@ module Fb
     def thumbnail_url
       "https://graph.facebook.com/#{@id}/picture?width=240&height=240"
     end
+
+    # # For test the page token - temporary code
+    # def feed
+    #   params = { access_token: @access_token }
+    #   request = HTTPRequest.new(path: "/#{@id}/feed", params: params)
+    #   request.run.body['data']
+    # end
 
     # Either link or message must be supplied.
     # https://developers.facebook.com/docs/graph-api/reference/v21.0/page/feed#publish
