@@ -141,5 +141,15 @@ module Fb
       request = HTTPRequest.new(path: "/#{@id}/feed", method: :post, params: params)
       request.run.body['id']
     end
+
+    # crossposted_video_id must be provided.
+    # @see https://developers.facebook.com/docs/video-api/guides/crossposting
+    def crosspost_video(options = {})
+      params = { access_token: @access_token }
+      params[:crossposted_video_id] = options[:crossposted_video_id] || ""
+      # params[:message] = options[:message] if options[:message]
+      request = HTTPRequest.new(path: "/#{@id}/videos", method: :post, params: params)
+      request.run.body['id']
+    end
   end
 end
