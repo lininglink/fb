@@ -7,7 +7,7 @@ This is a Ruby gem can call Facebook API.
 Install the gem and add to the application's Gemfile by executing:
 
 ```bash
-bundle add fb --github=kangkyu/fb
+bundle add fb --github=lininglink/fb
 ```
 
 This gem is not on [rubygems.org](https://rubygems.org). Do not run `gem install fb` or `bundle add fb` (there is a name of this gem for a different gem)
@@ -31,7 +31,7 @@ After checking out the repo, run `bin/setup` to install dependencies. Then, run 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/kangkyu/fb. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/kangkyu/fb/blob/master/CODE_OF_CONDUCT.md).
+Bug reports and pull requests are welcome on GitHub at https://github.com/lininglink/fb. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/lininglink/fb/blob/master/CODE_OF_CONDUCT.md).
 
 ## License
 
