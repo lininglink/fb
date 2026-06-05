@@ -1,6 +1,4 @@
 module Fb
-  class HTTPError < StandardError; end
-
   class HTTPRequest
     def initialize(options = {})
       @method = options.fetch :method, :get
