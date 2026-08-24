@@ -16,13 +16,6 @@ module Fb
       "https://graph.facebook.com/#{@id}/picture?width=240&height=240"
     end
 
-    # # For test the page token - temporary code
-    # def feed
-    #   params = { access_token: @access_token }
-    #   request = HTTPRequest.new(path: "/#{@id}/feed", params: params)
-    #   request.run.body['data']
-    # end
-
     # Either link or message must be supplied.
     # https://developers.facebook.com/docs/graph-api/reference/v21.0/page/feed#publish
     def publish(options = {})
@@ -53,6 +46,38 @@ module Fb
       params[:description] = options[:description] if options[:description]
       request = HTTPRequest.new(path: "/#{video_id}", method: :post, params: params)
       request.run.body['success']
+    end
+
+    # # For test the page token - temporary code
+    # def feed
+    #   params = { access_token: @access_token }
+    #   request = HTTPRequest.new(path: "/#{@id}/feed", params: params)
+    #   request.run.body['data']
+    # end
+
+    def with_page_access_token
+      @access_token = page_access_token
+      self
+    end
+
+    def insights(options = {})
+      options = default_options.merge options
+
+      params = { access_token: @access_token }
+      request = HTTPRequest.new path: "/#{@id}/insights", params: options.merge(params)
+      request.run.body
+    end
+
+    private
+
+    def page_access_token
+      params = { fields: "access_token", access_token: @access_token }
+      request = HTTPRequest.new path: "/#{@id}", params: params
+      request.run.body["access_token"]
+    end
+
+    def default_options
+      { period: "total_over_range", metric: "page_views_total", since: "2026-06-30", until: "2026-07-31" }
     end
   end
 end
