@@ -68,7 +68,23 @@ module Fb
       request.run.body
     end
 
+    # Videos uploaded to the page, most recent first.
+    # Pass limit:, since: or until: to narrow them down.
+    # @see https://developers.facebook.com/docs/graph-api/reference/page/videos/
+    def videos(options = {})
+      params = { fields: "title,description,created_time,length,picture,permalink_url,post_id" }.merge(options)
+      params[:access_token] = @access_token
+      request = HTTPRequest.new path: "/#{@id}/videos", params: params
+      request.run.body['data'].map do |video_data|
+        Video.new symbolize_keys(video_data).merge(access_token: @access_token)
+      end
+    end
+
     private
+
+    def symbolize_keys(options)
+      options.convert_keys { |k| k.to_sym }
+    end
 
     def page_access_token
       params = { fields: "access_token", access_token: @access_token }
@@ -77,7 +93,7 @@ module Fb
     end
 
     def default_options
-      { period: "total_over_range", metric: "page_views_total", since: "2026-06-30", until: "2026-07-31" }
+      { period: "total_over_range" }
     end
   end
 end
