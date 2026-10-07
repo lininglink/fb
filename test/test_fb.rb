@@ -44,4 +44,9 @@ class TestFb < Minitest::Test
     assert_equal 12.5, video.length
     assert_equal "2_1", video.post_id
   end
+
+  def test_page_access_token_presence
+    assert Fb::Page.new(id: "1", access_token: "token").access_token?
+    refute Fb::Page.new(id: "1").access_token?
+  end
 end

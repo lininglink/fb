@@ -55,6 +55,12 @@ module Fb
     #   request.run.body['data']
     # end
 
+    # False for a page listed through a business when the user has no role on
+    # that page, or did not grant it to the app.
+    def access_token?
+      !@access_token.to_s.empty?
+    end
+
     def with_page_access_token
       @access_token = page_access_token
       self
