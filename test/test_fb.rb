@@ -35,4 +35,13 @@ class TestFb < Minitest::Test
     assert_equal "secret", config.client_secret
     assert_equal "id", config.client_id
   end
+
+  def test_video_exposes_attributes
+    video = Fb::Video.new(id: "1", title: "Clip", length: 12.5, post_id: "2_1", access_token: "token")
+
+    assert_equal "1", video.id
+    assert_equal "Clip", video.title
+    assert_equal 12.5, video.length
+    assert_equal "2_1", video.post_id
+  end
 end
