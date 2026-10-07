@@ -9,7 +9,7 @@ module Fb
       @id = options[:id]
       @name = options[:name]
       @category = options[:category]
-      # The owning business, e.g. { id: "293992873671516", name: "Astra Media LLC" }
+      # The owning business, e.g. { id: "293992012345678", name: "Lining Link LLC" }
       @business = options[:business]
       @access_token = options[:access_token]
     end
