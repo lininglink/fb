@@ -49,4 +49,11 @@ class TestFb < Minitest::Test
     assert Fb::Page.new(id: "1", access_token: "token").access_token?
     refute Fb::Page.new(id: "1").access_token?
   end
+
+  def test_page_exposes_owning_business
+    page = Fb::Page.new(id: "1", business: { id: "2", name: "Biz" })
+
+    assert_equal "2", page.business[:id]
+    assert_nil Fb::Page.new(id: "1").business
+  end
 end

@@ -25,7 +25,7 @@ module Fb
 
     def pages
       @pages ||= begin
-        params = { access_token: @access_token, fields: "category,name,access_token" }
+        params = { access_token: @access_token, fields: "category,name,access_token,business" }
         request = HTTPRequest.new path: '/me/accounts', params: params
         request.run.body['data'].map do |page_data|
           # unless page_data.key?("access_token")

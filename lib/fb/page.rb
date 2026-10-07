@@ -3,12 +3,14 @@ require 'json'
 
 module Fb
   class Page
-    attr_reader :id, :name, :category
+    attr_reader :id, :name, :category, :business
 
     def initialize(options = {})
       @id = options[:id]
       @name = options[:name]
       @category = options[:category]
+      # The owning business, e.g. { id: "293992873671516", name: "Astra Media LLC" }
+      @business = options[:business]
       @access_token = options[:access_token]
     end
 
