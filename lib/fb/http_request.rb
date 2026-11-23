@@ -40,6 +40,26 @@ module Fb
       end
     end
 
+    # Sends the request and follows paging['next'] links, collecting the
+    # 'data' of every page.
+    # @param max [Integer, nil] stop once this many items are collected.
+    # @return [Array<Hash>] the items of all pages.
+    # @raise [Fb::HTTPError] if any page request fails.
+    def run_all_pages(max: nil)
+      data = []
+      request = self
+      loop do
+        body = request.run.body
+        page_data = body.fetch('data', [])
+        data.concat page_data
+        break if max && data.size >= max
+        next_url = body.dig('paging', 'next')
+        break if next_url.nil? || page_data.empty?
+        request = next_page_request(next_url)
+      end
+      max ? data.first(max) : data
+    end
+
     # @return [String] the request URL.
     def url
       uri.to_s
@@ -52,6 +72,15 @@ module Fb
     end
 
     private
+
+    # @return [Fb::HTTPRequest] a request for the page at next_url, whose
+    #   query already carries the cursor and the access token.
+    def next_page_request(next_url)
+      next_uri = URI next_url
+      self.class.new method: @method, expected_response: @expected_response,
+        host: next_uri.host, path: next_uri.path,
+        params: URI.decode_www_form(next_uri.query.to_s).to_h
+    end
 
     # @return [URI::HTTPS] the (memoized) URI of the request.
     def uri
