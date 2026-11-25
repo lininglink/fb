@@ -77,13 +77,16 @@ module Fb
     end
 
     # Videos uploaded to the page, most recent first.
-    # Pass limit:, since: or until: to narrow them down.
+    # Pass limit:, since: or until: to narrow them down. Follows paging
+    # until limit: videos are collected, or through every page without it.
     # @see https://developers.facebook.com/docs/graph-api/reference/page/videos/
     def videos(options = {})
       params = { fields: "title,description,created_time,length,picture,permalink_url,post_id" }.merge(options)
       params[:access_token] = @access_token
       request = HTTPRequest.new path: "/#{@id}/videos", params: params
-      request.run.body['data'].map do |video_data|
+      max = params[:limit] && Integer(params[:limit])
+      request.run_all_pages(max: max).map do |video_data|
+        # Videos: Graph never returns a token
         Video.new symbolize_keys(video_data).merge(access_token: @access_token)
       end
     end

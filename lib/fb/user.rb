@@ -27,10 +27,8 @@ module Fb
       @pages ||= begin
         params = { access_token: @access_token, fields: "category,name,access_token" }
         request = HTTPRequest.new path: '/me/accounts', params: params
-        request.run.body['data'].map do |page_data|
-          # unless page_data.key?("access_token")
-          #   page_data.merge! access_token: @access_token
-          # end
+        request.run_all_pages.map do |page_data|
+          # Pages: a missing page token means "no access"
           Page.new symbolize_keys(page_data)
         end
       end
@@ -40,11 +38,9 @@ module Fb
       @businesses ||= begin
         params = { access_token: @access_token, fields: "name,access_token" }
         request = HTTPRequest.new path: '/me/businesses', params: params
-        request.run.body['data'].map do |business_data|
-          unless business_data.key?("access_token")
-            business_data.merge! access_token: @access_token
-          end
-          Business.new symbolize_keys(business_data)
+        request.run_all_pages.map do |business_data|
+          # Businesses: Graph never returns a token
+          Business.new symbolize_keys(business_data).merge(access_token: @access_token)
         end
       end
     end
